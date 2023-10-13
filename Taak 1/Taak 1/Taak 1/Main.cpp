@@ -2,13 +2,24 @@
 //
 
 #include <iostream>
+#include <fstream>
+#include <string>
 
 int main()
 {
-    //variant 1
-
-
-
-
+    // Read data from the text file and populate the address book
+    std::ifstream inputFile("../data.txt");
+    if (inputFile.is_open()) {
+        std::string line;
+        while (std::getline(inputFile, line)) {
+			std::cout << "KAK";
+        }
+        inputFile.close();
+    }
+    else {
+        std::cout << "Unable to open the txt file." << std::endl;
+        return 1;
+    }
 }
+
 
