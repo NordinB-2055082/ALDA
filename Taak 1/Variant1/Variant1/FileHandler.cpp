@@ -1,5 +1,6 @@
 #include "FileHandler.h"
 #include <fstream>
+#include <iostream>
 
 void FileHandler::readContactsFromFile(const std::string& fileName, AddressBook& addressBook) {
     std::ifstream inputFile(fileName);
@@ -24,13 +25,13 @@ void FileHandler::readContactsFromFile(const std::string& fileName, AddressBook&
             phoneNumber = line.substr(pos + 1);
             // Create contact object and add to book
             Contact contact = { firstName, lastName, address, phoneNumber };
-            addressBook.addContact(firstName + " " + lastName, contact);
+            addressBook.addContact(contact);
         }
         inputFile.close();
     }
     else {
         // Error opening file
         std::cout << "Unable to open the txt file." << std::endl;
-        return 1;
+        return;
     }
 }
