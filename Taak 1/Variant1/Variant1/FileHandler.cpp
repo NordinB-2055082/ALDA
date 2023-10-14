@@ -1,6 +1,7 @@
 #include "FileHandler.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 void FileHandler::readContactsFromFile(const std::string& fileName, AddressBook& addressBook) {
     std::ifstream inputFile(fileName);
@@ -9,23 +10,16 @@ void FileHandler::readContactsFromFile(const std::string& fileName, AddressBook&
         std::string line;
         while (std::getline(inputFile, line)) {
             std::string firstName, lastName, address, phoneNumber;
-            size_t pos = 0;
-            // First name
-            pos = line.find(";");
-            firstName = line.substr(0, pos);
-            line.erase(0, pos + 1);
-            // Last name
-            pos = line.find(";");
-            lastName = line.substr(0, pos);
-            line.erase(0, pos + 1);
-            // Adress 
-            pos = line.find(";");
-            address = line.substr(0, pos);
-            // phoneNumber
-            phoneNumber = line.substr(pos + 1);
-            // Create contact object and add to book
-            Contact contact = { firstName, lastName, address, phoneNumber };
-            addressBook.addContact(contact);
+            std::istringstream lineStream(line);
+
+            if (std::getline(lineStream, firstName, ';') &&
+                std::getline(lineStream, lastName, ';') &&
+                std::getline(lineStream, address, ';') &&
+                std::getline(lineStream, phoneNumber)) {
+
+                Contact contact = { firstName, lastName, address, phoneNumber };
+                addressBook.addContact(contact);
+            }
         }
         inputFile.close();
     }
