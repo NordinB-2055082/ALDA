@@ -3,7 +3,7 @@
 /*
 We add a new contact to our unordered map named contacts. 
 The time complexity here is O(1). If the data wasn't unique,
-so we had multiple "John Doe" in our txt file, we could get a
+so we had multiple "Thomas Jansens" in our txt file, we could get a
 hash collision. Since we have unique data, this becomes O(1).
 */
 void addressbook::addContact(const Contact &contact){
