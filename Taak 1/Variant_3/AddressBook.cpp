@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 
+//using 2 vectors isnt memory efficient but it is fast!
 void AddressBook::addContact(const Contact& contact) {
     std::string fullName = contact.getFullName();
     std::string lastName = contact.getLastName();
