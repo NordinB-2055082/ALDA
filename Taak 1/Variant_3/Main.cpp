@@ -16,11 +16,15 @@ int main() {
             addressBook.addContact(contact);
         }
     }
-    // Example usage of addressBook methods:
+    //example usage of addressBook methods:
+
+    //query contact
     addressBook.queryByFullName("Tracey Payne");
-    //addressBook.deleteContact("Pam Zuniga");
     addressBook.queryByLastName("Zuniga");
-    //addressBook.printAllContactsSortedByLastName();
+    //delete contact
+    addressBook.deleteContact("Pam Zuniga");
+    //command to sort and print the contacts
+    addressBook.printAllContactsSortedByLastName();
 
     return 0;
 }
