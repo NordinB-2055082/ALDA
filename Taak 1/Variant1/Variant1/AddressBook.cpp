@@ -3,7 +3,7 @@
 
 
 // The average time complexity for adding a contact into an unordered map is O(1) on average
-// This is because the data structure uses a hash table to store the data 
+// This is because the data structure uses a hash table to store the data, the full name is the key
 void AddressBook::addContact(const Contact& contact) {
     contacts[contact.getFullName()] = contact;
 }
