@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <iostream>
 
 int main() {
     AddressBook addressBook;
@@ -19,10 +20,16 @@ int main() {
     //example usage of addressBook methods:
 
     //query contact
+    std::cout << "Query Tracey Payne by full name" << std::endl;
     addressBook.queryByFullName("Tracey Payne");
+    std::cout << "Query the last name Zuniga" << std::endl;
     addressBook.queryByLastName("Zuniga");
+    std::cout << "Delete Pam Zuniga" << std::endl;
     //delete contact
     addressBook.deleteContact("Pam Zuniga");
+    std::cout << "Query Pam Zuniga to see if she is gone" << std::endl;
+    addressBook.queryByFullName("Pam Zuniga");
+
     //command to sort and print the contacts
     addressBook.printAllContactsSortedByLastName();
 

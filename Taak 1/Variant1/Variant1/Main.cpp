@@ -19,15 +19,17 @@ int main() {
     // This is O(N) 
     FileHandler::readContactsFromFile("../data.txt", addressBook);
 
-    // Test example: add new contact 
-    Contact newContact("Nordin", "Ben-Al-Lal", "123 Sint-Truiden", "1234DatZieJeVanHier");
-    addressBook.addContact(newContact);
+    //Test example: add contact 
+    //Contact newContact("Nordin", "Ben-Al-Lal", "123 Sint-Truiden", "1234DatZieJeVanHier");
+    //addressBook.addContact(newContact);
     
-    // Query the contact info of the person you want
-    addressBook.queryContact("Lisa Sosa");
-
+    // Query the contact info of the person you want for example lisa sosa out the dataset
+    addressBook.queryContact("Lisa Blackburn");
+    std::cout << "Delete Lisa Blackburn:" << std::endl;
     // Test example: delete contact
-    addressBook.deleteContact("Nordin Ben-Al-Lal");
+    addressBook.deleteContact("Lisa Blackburn");
+    std::cout << "Zoek Lisa Blackburn na deleten:" << std::endl;
+    addressBook.queryContact("Lisa Blackburn");
 
     return 0;
 }

@@ -3,7 +3,8 @@
 #include <algorithm>
 #include <vector>
 
-//using 2 vectors isnt memory efficient but it is fast!
+//using 2 vectors isnt memory efficient but it is fast! Adding is O(2N) = O(N) but the rest is O(1) and ordering is now O(N), which is really fast
+
 void AddressBook::addContact(const Contact& contact) {
     std::string fullName = contact.getFullName();
     std::string lastName = contact.getLastName();
