@@ -18,20 +18,16 @@ int main() {
     // Read contacts from file
     // This is O(N) 
     FileHandler::readContactsFromFile("../data.txt", addressBook);
-    std::cout  << "------------------" << std::endl;
     // Test example: add new contact 
     Contact newContact("Nordin", "Ben-Al-Lal", "123 Sint-Truiden", "1234DatZieJeVanHier");
     addressBook.addContact(newContact);
-    std::cout  << "------------------" << std::endl;
-
+    
     // Query the contact info of the person you want
     addressBook.queryContact("Nordin Ben-Al-Lal");
-    std::cout  << "------------------" << std::endl;
 
     // Test example: delete contact
     addressBook.deleteContact("Nordin Ben-Al-Lal");
-    std::cout  << "------------------" << std::endl;
-    
+    //Try to find the contact after it got deleted    
     addressBook.queryContact("Nordin Ben-Al-Lal");
 
     return 0;
