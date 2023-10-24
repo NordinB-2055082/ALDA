@@ -27,7 +27,9 @@ void addressbook::deleteContact(const std::string &fullName){
 }
 /*
 This one is O(N), we are iterating over all the elements in contacts
-If we could use a fullName as a key, like in variant1, it would be O(N) since fullNames are unique.   
+AnyParameter could be a lastName, firstName, address or phoneNumber.
+FirstNames/LastNames are NOT unique, bv there could be multiple people with
+a LastName like Payne, so this makes it O(N).
 */
 void addressbook::queryContact(const std::string &anyParameter) const{
     bool found = false;
