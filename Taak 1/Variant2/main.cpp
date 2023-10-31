@@ -4,6 +4,7 @@
 
 int main(){
     addressbook addressbook;
+    //this is just O(N)
     Filehandler::readContactsFromFile("./data.txt", addressbook);
     //Making an example as test
     //We'll add a new contact 

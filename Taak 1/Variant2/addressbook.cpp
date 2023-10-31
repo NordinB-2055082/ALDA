@@ -47,3 +47,16 @@ void addressbook::queryContact(const std::string &anyParameter) const{
         std::cout << "Can't find the contact!" <<std::endl;
     }
 }
+
+/*
+FEEDBACK:
+Alternatives: 
+You could use a vector to put all contacts in an addressbook. 
+However, this would be a bit slower due to the fact we're dealing with a lot of data. 
+An array can be used too, but there is a downside to it. We have to go through the entire array
+    to find all contacts that have the name Peter for example. This would be O(n)
+    If we delete a contact given the fullName, we would have to shift all the others one place to the left, what also is o(n).
+    In an unordered map is it O(n) given a fullName(is unique).
+Using a list would give us the same time complexity as a vector(O(N)), 
+    so no need to use it as well since it gives us the same downside as when we use a vector.
+*/
