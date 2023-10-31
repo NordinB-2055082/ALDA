@@ -1,123 +1,89 @@
 #include "addressbook.h"
-#include <iostream>
-#include <algorithm>
-#include <vector>
 
-//using 2 vectors isnt memory efficient but it is fast! Adding is O(2N) = O(N) but the rest is O(1) and ordering is now O(N), which is really fast
+// ADDING a contact using a multimap is O(Log N)
+// DELETING is O(N *log N), it involves searchiung for the contact O(N) and then deleting the contact which is logarithmic with a multimap
+// QUERY contact by last name is O(log N + M), once the last name is found (Log N), the number of contacts with that last name is 'M', and outputting these contacts would take O(M) time.
+// PRINT OUTPUT of the entire addressBook is now O(N) because it is already sorted because of the multimap
 
-void AddressBook::addContact(const Contact& contact) {
-    std::string fullName = contact.getFullName();
-    std::string lastName = contact.getLastName();
-    contactsByFullName[fullName] = contact;
-    contactsByLastName[lastName].push_back(contact);
-}
 
-bool AddressBook::deleteContact(const std::string& fullName) {
-    auto it = contactsByFullName.find(fullName);
-    if (it != contactsByFullName.end()) {
-        std::string lastName = it->second.getLastName();
-        auto& contactsWithSameLastName = contactsByLastName[lastName];
-        auto removeIt = std::remove_if(contactsWithSameLastName.begin(), contactsWithSameLastName.end(), [&fullName](const Contact& c) {
-            return c.getFullName() == fullName;
-            });
-        if (removeIt != contactsWithSameLastName.end()) {
-            contactsWithSameLastName.erase(removeIt);
+// EXPLANATION WHY MULTIMAP VS MAP VS WHAT WE DID FIRST
+// 
+// If each last name should correspond to only one contact, and there are no duplicates, 
+// a std::map might be more efficient in terms of memory and potentially quicker lookups since it avoids storing duplicate keys.
+// but in our case there are duplicates so we use a multimap
+//
+// What we did now is way more efficient in terms of memory and time, because we didnt have to worry about a sorting algorithm like we did in our previous version using radix sort
+// the insertion of a multimap is quite efficient already and is in our opinion better suited for this scenario
+// 
+// So we can conclude that even that the insertion and lookup functions are slower using a multimap, our project is OVERALL way better and faster
+//
+void AddressBook::loadFromFile(const std::string& filename) {
+    std::ifstream file(filename);
+    if (file.is_open()) {
+        std::string line;
+        while (std::getline(file, line)) {
+            std::stringstream ss(line);
+            std::string firstName, lastName, address, phoneNumber;
+            std::getline(ss, firstName, ';');
+            std::getline(ss, lastName, ';');
+            std::getline(ss, address, ';');
+            std::getline(ss, phoneNumber, ';');
+            Contact newContact(firstName, lastName, address, phoneNumber);
+            addContact(newContact);
         }
-        contactsByFullName.erase(it);
-        return true;
-    }
-    return false;
-}
-
-void AddressBook::queryByFullName(const std::string& fullName) const {
-    auto it = contactsByFullName.find(fullName);
-    if (it != contactsByFullName.end()) {
-        it->second.print();
+        file.close();
     }
     else {
-        std::cout << "Contact not found." << std::endl;
+        std::cerr << "Unable to open file: " << filename << std::endl;
     }
 }
 
-void AddressBook::queryByLastName(const std::string& lastName) const {
-    auto it = contactsByLastName.find(lastName);
-    if (it != contactsByLastName.end()) {
-        for (const Contact& contact : it->second) {
-            contact.print();
-        }
-    }
-    else {
-        std::cout << "No contacts with the last name: " << lastName << std::endl;
-    }
+void AddressBook::addContact(const Contact& newContact) {
+    contacts.insert(std::make_pair(newContact.getLastName(), newContact));
 }
 
-//Radix sorting algorithm is O(k*n) where k is the lenght of the last name of the contact 
-void AddressBook::printAllContactsSortedByLastName() const {
-    
-    std::vector<Contact> allContacts;
-    for (const auto& entry : contactsByLastName) {
-        allContacts.insert(allContacts.end(), entry.second.begin(), entry.second.end());
-    }
-
-    //Maximum length of last names
-    size_t maxLastNameLength = 0;
-    for (const Contact& contact : allContacts) {
-        maxLastNameLength = std::max(maxLastNameLength, contact.getLastName().length());
-    }
-
-    //Radix Sort on last names https://www.geeksforgeeks.org/radix-sort/; https://www.cs.helsinki.fi/u/tpkarkka/opetus/13s/spa/lecture03.pdf
-    for (int i = maxLastNameLength - 1; i >= 0; i--) {
-        std::vector<Contact> sortedContacts(allContacts.size());
-        int counting[256] = { 0 }; // Ascii
-
-        //occurrences of characters at position i
-        for (const Contact& contact : allContacts) {
-            unsigned char lastNameChar = (i < contact.getLastName().length()) ? contact.getLastName()[i] : 0;
-            counting[lastNameChar]++;
-        }
-
-        //cumulative counts
-        for (int j = 1; j < 256; j++) {
-            counting[j] += counting[j - 1];
-        }
-
-        //build the sorted array based on counts
-        for (int j = allContacts.size() - 1; j >= 0; j--) {
-            const Contact& contact = allContacts[j];
-            unsigned char lastNameChar = (i < contact.getLastName().length()) ? contact.getLastName()[i] : 0;
-            sortedContacts[counting[lastNameChar] - 1] = contact;
-            counting[lastNameChar]--;
-        }
-
-        //copy sorted array back to allContacts
-        allContacts.assign(sortedContacts.begin(), sortedContacts.end());
-    }
-
-    //print
-    for (const Contact& contact : allContacts) {
-        contact.print();
-    }
-}
-/* //n log n can be improved
-void AddressBook::printAllContactsSortedByLastName() const {
-    // Create a vector to hold the contacts sorted by last name
-    std::vector<Contact> sortedContacts;
-
-    // Iterate through the contactsByLastName unordered_map
-    for (const auto& entry : contactsByLastName) {
-        for (const Contact& contact : entry.second) {
-            sortedContacts.push_back(contact);
-        }
-    }
-
-    // Sort the contacts by last name
-    std::sort(sortedContacts.begin(), sortedContacts.end(), [](const Contact& a, const Contact& b) {
-        return a.getLastName() < b.getLastName();
+void AddressBook::deleteContact(const std::string& fullName) {
+    auto it = std::find_if(contacts.begin(), contacts.end(), [&](const std::pair<std::string, Contact>& element) {
+        return (element.second.getFirstName() + " " + element.second.getLastName()) == fullName;
         });
-
-    // Print the sorted contacts
-    for (const Contact& contact : sortedContacts) {
-        contact.print();
+    if (it != contacts.end()) {
+        contacts.erase(it);
+    }
+    else {
+        std::cerr << "Contact " << fullName << " not found in the address book." << std::endl;
     }
 }
-*/
+
+void AddressBook::queryContactByFullName(const std::string& fullName) const {
+    auto it = std::find_if(contacts.begin(), contacts.end(), [&](const std::pair<std::string, Contact>& element) {
+        return (element.second.getFirstName() + " " + element.second.getLastName()) == fullName;
+        });
+    if (it != contacts.end()) {
+        std::cout << "Contact found: " << it->second.getFirstName() << " " << it->second.getLastName()
+            << " Address: " << it->second.getAddress() << " Phone: " << it->second.getPhoneNumber() << std::endl;
+    }
+    else {
+        std::cerr << "Contact " << fullName << " not found in the address book." << std::endl;
+    }
+}
+
+void AddressBook::queryContactsByLastName(const std::string& lastName) const {
+    auto range = contacts.equal_range(lastName);
+    if (range.first != contacts.end()) {
+        std::cout << "Contacts with last name " << lastName << ":\n";
+        for (auto it = range.first; it != range.second; ++it) {
+            std::cout << it->second.getFirstName() << " " << it->second.getLastName()
+                << " Address: " << it->second.getAddress() << " Phone: " << it->second.getPhoneNumber() << std::endl;
+        }
+    }
+    else {
+        std::cerr << "No contacts found with last name " << lastName << " in the address book." << std::endl;
+    }
+}
+
+void AddressBook::outputAddressBook() const {
+    for (const auto& entry : contacts) {
+        std::cout << entry.second.getFirstName() << " " << entry.second.getLastName()
+            << " Address: " << entry.second.getAddress() << " Phone: " << entry.second.getPhoneNumber() << std::endl;
+    }
+}
