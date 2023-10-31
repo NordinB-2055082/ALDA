@@ -11,7 +11,6 @@ void AddressBook::addContact(const Contact& contact) {
 
 // The time complexity for searching for a specific contact in an unordered map is O(1) on average
 // Similar to insertion, this is because the hash table allows for constant-time lookups
-// Because we had to assume the names were unique, we will not have any collisions
 void AddressBook::queryContact(const std::string& fullName) const {
     auto it = contacts.find(fullName);
     if (it != contacts.end()) {
