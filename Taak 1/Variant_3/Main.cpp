@@ -1,37 +1,30 @@
 #include "addressbook.h"
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <iostream>
+
 
 int main() {
+    //added loadFromFile for cleaner code 
     AddressBook addressBook;
-    std::ifstream dataFile("../data.txt");
-    std::string line;
+    addressBook.loadFromFile("../data.txt");
 
-    while (std::getline(dataFile, line)) {
-        std::istringstream iss(line);
-        std::string firstName, lastName, address, phoneNumber;
-        if (std::getline(iss, firstName, ';') && std::getline(iss, lastName, ';') && std::getline(iss, address, ';') && std::getline(iss, phoneNumber)) {
-            Contact contact(firstName, lastName, address, phoneNumber);
-            addressBook.addContact(contact);
-        }
-    }
     //example usage of addressBook methods:
 
     //query contact
     std::cout << "Query Tracey Payne by full name" << std::endl;
-    addressBook.queryByFullName("Tracey Payne");
+    // query by full name
+    addressBook.queryContactByFullName("Tracey Payne");
+
     std::cout << "Query the last name Zuniga" << std::endl;
-    addressBook.queryByLastName("Zuniga");
+    addressBook.queryContactsByLastName("Zuniga");
     std::cout << "Delete Pam Zuniga" << std::endl;
     //delete contact
     addressBook.deleteContact("Pam Zuniga");
     std::cout << "Query Pam Zuniga to see if she is gone" << std::endl;
-    addressBook.queryByFullName("Pam Zuniga");
+    addressBook.queryContactByFullName("Pam Zuniga");
 
-    //command to sort and print the contacts
-    addressBook.printAllContactsSortedByLastName();
+    // print the entire address book sorted by last name
+    std::cout << "Address Book (Sorted by Last Name):\n";
+    addressBook.outputAddressBook();
+
 
     return 0;
 }
