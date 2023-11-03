@@ -1,3 +1,5 @@
+// AUTEURS: Nordin Ben-AL-Lal, Abdullah Yalvac
+// 
 // Taak 1.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 // 1. Query by full name

@@ -1,3 +1,4 @@
+// AUTEURS: Nordin Ben-AL-Lal, Abdullah Yalvac
 #include "contact.h"
 
 Contact::Contact():firstName(""), lastName(""), address(""), phoneNumber("") {}

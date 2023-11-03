@@ -1,3 +1,4 @@
+// AUTEURS: Nordin Ben-AL-Lal, Abdullah Yalvac
 #pragma once
 #include <string>
 
