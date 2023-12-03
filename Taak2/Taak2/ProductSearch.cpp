@@ -163,8 +163,10 @@ void ProductSearch::printProducts(const std::vector<int>& indices, int start, in
 in this function we do the 2 searches as discussed in searchProducts
 after that we merge the indices and erase the copies, so 
 the overall time complexity depends on the number of products found in the Trie and the number of pages displayed.
-In the worst case, where all products match the query, the time complexity would be O(N * M).
+In the worst case, where all products match the query, the time complexity would be O(N * M). N is the total number of products in the dataset.
+M is the length of the query string entered by the user.
 Best case is O(1) when we found 1 index and we immediately know where to read it in the vector of products
+
 */ 
 void ProductSearch::searchAndPrint(const std::string& query) {
     //Search by ID
