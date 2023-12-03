@@ -124,7 +124,16 @@ void ProductSearch::insertProductToTrie(const Product& product, int index, TrieT
     std::transform(key.begin(), key.end(), key.begin(), ::tolower);
 
     TrieNode* node = (type == ID) ? idTrieRoot : titleTrieRoot;
-
+    //Hashmap implementation
+    for (unsigned char c : key) {
+        if (node->children.find(c) == node -> children.end()) { //if isnt in the hashmap of the node make a new TrieNode
+            node->children[c] = new TrieNode();
+        }
+        node = node->children[c];
+        node->productIndices.push_back(index);
+    }
+    
+    /*
     for (unsigned char c : key) {
         if (!node->children[c]) {
             node->children[c] = new TrieNode();
@@ -132,6 +141,7 @@ void ProductSearch::insertProductToTrie(const Product& product, int index, TrieT
         node = node->children[c];
         node->productIndices.push_back(index);
     }
+    */
 }
 
 
@@ -142,7 +152,19 @@ std::vector<int> ProductSearch::searchProducts(const std::string& query, TrieTyp
     transform(key.begin(), key.end(), key.begin(), ::tolower);
 
     TrieNode* node = (type == ID) ? idTrieRoot : titleTrieRoot;
+    
+    for (unsigned char c : key) {
+        if (node->children.find(c) == node->children.end()) { 
+            std::cout << "no matching products line 158";
+            return {}; // no matching products
+        }
+        node = node->children[c];
+    }
 
+    return node->productIndices;
+    
+    
+    /*
     for (unsigned char c : key) {
         if (!node->children[c]) {
             return {};
@@ -151,6 +173,7 @@ std::vector<int> ProductSearch::searchProducts(const std::string& query, TrieTyp
     }
 
     return node->productIndices;
+    */
 }
 void ProductSearch::printProducts(const std::vector<int>& indices, int start, int end) {
     for (int i = start; i <= end && i < indices.size(); ++i) {
@@ -163,10 +186,8 @@ void ProductSearch::printProducts(const std::vector<int>& indices, int start, in
 in this function we do the 2 searches as discussed in searchProducts
 after that we merge the indices and erase the copies, so 
 the overall time complexity depends on the number of products found in the Trie and the number of pages displayed.
-In the worst case, where all products match the query, the time complexity would be O(N * M). N is the total number of products in the dataset.
-M is the length of the query string entered by the user.
+In the worst case, where all products match the query, the time complexity would be O(N * M).
 Best case is O(1) when we found 1 index and we immediately know where to read it in the vector of products
-
 */ 
 void ProductSearch::searchAndPrint(const std::string& query) {
     //Search by ID
