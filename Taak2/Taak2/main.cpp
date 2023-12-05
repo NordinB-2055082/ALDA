@@ -17,6 +17,5 @@ int main() {
         std::cout << "Enter search string for suggestions and you have to end with #. Press enter to get the full list or q to quit." << std::endl;
         std::getline(std::cin, input);
     }
-
     return 0;
 }

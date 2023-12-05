@@ -17,6 +17,14 @@ ProductSearch::~ProductSearch() {
 }
 
 /*
+ANALYSE 1 Trie vs 2 Tries:
+Voor het zoeken hebben beide opties een tijdscomplexiteit van O(K) waarbij K de totale lengte van de query is. 
+Maar in het geval van 2 tries voor je eigenlijk 2 operaties uit, maar aangezien constanten wegvallen resulteert dit ook in O(K).
+Voor insertions en deletions is er een gelijkaardig resultaat, bij 2 tries doe je het inserten en deleten 2 keer maar dat wordt dus O(K)
+Dus eigenlijk zou 1 trie beter zijn, maar veel verschil in tijdscomplexiteit is er niet.
+*/
+
+/*
 Loading a product and putting it into the vector is seen as  O(N * M) with 
 N the number of products and M  the average length of the product titles.
 */
@@ -88,11 +96,11 @@ void ProductSearch::loadProducts(const std::string& filename) {
 
         insertProductToTrie(product, products.size() - 1, ID);
         insertProductToTrie(product, products.size() - 1, TITLE);
-
     }
 
     file.close();
 }
+
 // the split function is O(N), because it iterates over every character till he finds a comma
 vector<std::string> ProductSearch::split(const std::string& s, char delimiter) {
     vector<std::string> tokens;
@@ -109,8 +117,10 @@ string ProductSearch::removeQuotes(const std::string& s) {
     result.erase(remove(result.begin(), result.end(), '"'), result.end());
     return result;
 }
-//Time complexity for inserting a product into the trie is O(M) with M the lenght of the product title
-//But it is important to know that we have made 2 Tries (see loadProducts), 1 for the product id and one for the title
+
+//AANGEPAST: insertProductToTrie aangepast zodat nu ook partial match mogelijk is.
+//Time complexity for inserting a product into the trie is O(M^2) with M the lenght of the product title.
+//But it is important to know that we have made 2 Tries (see loadProducts), 1 for the product id and one for the title.
 void ProductSearch::insertProductToTrie(const Product& product, int index, TrieType type) {
     std::string key;
 
@@ -120,50 +130,40 @@ void ProductSearch::insertProductToTrie(const Product& product, int index, TrieT
     else if (type == TITLE) {
         key = product.title + END_CHAR;
     }
-    //this function is to make everything in lowercase so the input cant be mismatched.
+    // this function is to make everything in lowercase so the input can't be mismatched.
     std::transform(key.begin(), key.end(), key.begin(), ::tolower);
 
     TrieNode* node = (type == ID) ? idTrieRoot : titleTrieRoot;
-    //Hashmap implementation
-    for (unsigned char c : key) {
-        if (node->children.find(c) == node -> children.end()) { //if isnt in the hashmap of the node make a new TrieNode
-            node->children[c] = new TrieNode();
-        }
-        node = node->children[c];
-        node->productIndices.push_back(index);
-    }
-    
-    /*
-    for (unsigned char c : key) {
-        if (!node->children[c]) {
-            node->children[c] = new TrieNode();
-        }
-        node = node->children[c];
-        node->productIndices.push_back(index);
-    }
-    */
-}
 
+    for(size_t i = 0; i<key.size(); ++i){
+        std::string suffix = key.substr(i);
+        TrieNode* suffixNode = node;
+        //Hashmap implementation
+        for(unsigned char c : suffix){
+            if(suffixNode->children.find(c) == suffixNode->children.end()){
+                suffixNode->children[c] = new TrieNode();
+            }
+            suffixNode = suffixNode->children[c];
+            suffixNode->productIndices.push_back(index);
+        }
+    }
+}
 
 //Searching for the products is O(K) with K the lenght of the search query
 //we also have to do the search function twice because we have to iterate over the 2 tries
 std::vector<int> ProductSearch::searchProducts(const std::string& query, TrieType type) {
     string key = query.substr(0, query.size()-1);
     transform(key.begin(), key.end(), key.begin(), ::tolower);
-
     TrieNode* node = (type == ID) ? idTrieRoot : titleTrieRoot;
     
+    //aangepast
     for (unsigned char c : key) {
         if (node->children.find(c) == node->children.end()) { 
-            std::cout << "no matching products line 158";
             return {}; // no matching products
         }
         node = node->children[c];
     }
-
     return node->productIndices;
-    
-    
     /*
     for (unsigned char c : key) {
         if (!node->children[c]) {

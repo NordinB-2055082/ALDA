@@ -6,7 +6,6 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
-
 #include "Product.h"
 #include "TrieNode.h"
 
@@ -26,13 +25,10 @@ public:
     void loadProducts(const std::string& filename);
 
     void insertProductToTrie(const Product& product, int index, TrieType type);
-
+    
     std::vector<int> searchProducts(const std::string& query, TrieType type);
-
     void printProducts(const std::vector<int>& indices, int start, int end);
-
-    void searchAndPrint(const std::string& query);
-
+    void searchAndPrint(const std::string& query);    
 
 private:
     std::vector<Product> products;
