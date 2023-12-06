@@ -6,6 +6,7 @@
 
 const char END_CHAR = '#';
 
+//allemaal in comment gezet
 /*
 class TrieNode {
 public:
