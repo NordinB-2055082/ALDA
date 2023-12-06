@@ -21,7 +21,10 @@ ANALYSE 1 Trie vs 2 Tries:
 Voor het zoeken hebben beide opties een tijdscomplexiteit van O(K) waarbij K de totale lengte van de query is. 
 Maar in het geval van 2 tries voor je eigenlijk 2 operaties uit, maar aangezien constanten wegvallen resulteert dit ook in O(K).
 Voor insertions en deletions is er een gelijkaardig resultaat, bij 2 tries doe je het inserten en deleten 2 keer maar dat wordt dus O(K)
-Dus eigenlijk zou 1 trie beter zijn, maar veel verschil in tijdscomplexiteit is er niet.
+Dus eigenlijk zou 1 trie beter zijn, maar veel verschil in tijdscomplexiteit is er niet. Het gebruiken van de index van het product in de 
+vector zouden we ook aanpassen naar bvb: een hashnmap, waar alle producten inzitten en de key van het juiste product mee te geven aan de Node.
+Hoewel er geen verschil gaat zijn in tijdscomplexiteit bij het opzoeken, gaat dit een mogelijk probleem oplossen bij het deleten van de producten
+wanneer een product uit de vector wordt verwijderd en er een shift gebeurd, kan het zijn dat de indexen niet meer kloppen.
 */
 
 /*
@@ -187,6 +190,7 @@ in this function we do the 2 searches as discussed in searchProducts
 after that we merge the indices and erase the copies, so 
 the overall time complexity depends on the number of products found in the Trie and the number of pages displayed.
 In the worst case, where all products match the query, the time complexity would be O(N * M).
+with N the size of the products and M the size of the query
 Best case is O(1) when we found 1 index and we immediately know where to read it in the vector of products
 */ 
 void ProductSearch::searchAndPrint(const std::string& query) {
