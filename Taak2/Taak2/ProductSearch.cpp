@@ -135,7 +135,7 @@ void ProductSearch::insertProductToTrie(const Product& product, int index, TrieT
 
     TrieNode* node = (type == ID) ? idTrieRoot : titleTrieRoot;
 
-    for(size_t i = 0; i<key.size(); ++i){
+    for(int i = 0; i<key.size(); ++i){
         std::string suffix = key.substr(i);
         TrieNode* suffixNode = node;
         //Hashmap implementation
